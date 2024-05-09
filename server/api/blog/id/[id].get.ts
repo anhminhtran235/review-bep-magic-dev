@@ -6,8 +6,9 @@ const appConfig = useAppConfig();
 export default defineEventHandler(async (event) => {
   try {
     const id = getRouterParam(event, "id");
-    const result = await Blog.findById(id);
-    return result;
+    // Return luôn. Không cần store vào 1 variable nữa. Trừ khi em cần clarify xem await Blog.findById(id) trả về cái gì thì em
+    // mới store vào variable và đặt tên cho nó để giải thích thêm
+    return await Blog.findById(id);
   } catch (error: any) {
     if (error instanceof mongoose.Error.CastError) {
       throw createError(appConfig.error.badrequest);

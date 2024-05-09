@@ -26,6 +26,8 @@ export default defineEventHandler(async (event) => {
     }
     return appConfig.success;
   } catch (error: any) {
+    // Cái error handling logic này anh thấy repeat nhiều lần nhỉ. Em tạo 1 cái 
+    // util function handleError() rồi tất cả mọi nơi gọi function đó được ko?
     if (
       error.statusCode == 400 ||
       error instanceof mongoose.Error.ValidationError ||
@@ -37,3 +39,19 @@ export default defineEventHandler(async (event) => {
     }
   }
 });
+
+// Cho cái này vào 1 cái util file nào đấy
+function handleError(error: any, appConfig: any) {
+  if (isClientError(error)) {
+    throw createError(appConfig.error.badrequest);
+  } else {
+    throw createError(appConfig.error.internalservererror);
+  }
+}
+
+function isClientError(error) {
+  return z.instanceof(error) ||
+    error.statusCode == 400 ||
+    error instanceof mongoose.Error.ValidationError ||
+    error instanceof mongoose.Error.CastError;
+}

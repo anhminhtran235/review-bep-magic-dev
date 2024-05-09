@@ -14,12 +14,8 @@ const BlogSchema = new Schema<DBlog>(
       required: true,
     },
   },
-  {
-    timestamps: {
-      createdAt: "created_at",
-      updatedAt: "updated_at",
-    },
-  }
+  // Viết như này là thay cho mấy dòng kia
+  { timestamps: true }
 );
 
 export default model("Blog", BlogSchema);

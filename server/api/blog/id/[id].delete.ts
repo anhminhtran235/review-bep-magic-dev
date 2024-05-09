@@ -14,10 +14,15 @@ export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, "id");
     const result = await Blog.findByIdAndDelete(id);
     if (result?.banner_url != undefined && result.banner_url != "") {
+      // Những cái HTTP requests kiểu này em nên cho vào 1 cái service. Em có thể
+      // gọi nó là HttpService. Với cả anh hỏi ChatGPT thì dùng axios tốt hơn là $fetch
       await $fetch(
         `${runtimeConfig.public.imageDomain}/image/${result.banner_url}`,
         {
           headers: {
+            // Hình như DELETE, PUT, và POST requests nào em cũng cần x-api-key à?
+            // Nếu là như vậy thì em có thể intercept tất cả các DELETE, PUT, và POST requests và thêm cái x-api-key header
+            // này để tránh lần nào cũng phải add
             "x-api-key": runtimeConfig.imageXApiKey,
           },
           method: "DELETE",
@@ -37,3 +42,25 @@ export default defineEventHandler(async (event) => {
     }
   }
 });
+
+
+// Trông nó kiểu kiểu như này
+// HttpService.ts
+class HttpService {
+  constructor() {
+    this.appConfig = useAppConfig();
+    this.runtimeConfig = useRuntimeConfig();
+    
+    axios.interceptors.request.use(request => {
+      if (['DELETE', 'PUT', 'POST'].includes(request.method)) {
+        request.headers['x-api-key'] = this.runtimeConfig.imageXApiKey;
+      }
+    });
+  }
+
+  async deleteImage(url) {
+    return await axios.delete(`${this.runtimeConfig.public.imageDomain}/image/${url}`);
+  }
+
+  ...
+}

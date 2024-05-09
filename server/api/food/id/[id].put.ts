@@ -19,6 +19,8 @@ export default defineEventHandler(async (event) => {
       // Delete old image
       const oldFood = await Food.findById(id, "image_url");
       if (oldFood?.image_url != undefined && oldFood.image_url != "") {
+        // Em repeat code để delete image 2 lần này. Đây là một trong những lý do tại sao em
+        // nên có HttpService :)
         await $fetch(
           `${runtimeConfig.public.imageDomain}/image/${oldFood.image_url}`,
           {

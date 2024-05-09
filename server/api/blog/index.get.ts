@@ -7,19 +7,18 @@ const appConfig = useAppConfig();
 
 export default defineEventHandler(async (event) => {
   try {
-    const query = await getValidatedQuery(event, (query) =>
+    // Nên viết code ngắn lại mà vẫn đủ hiểu
+    const {title, sort, page, limit} = await getValidatedQuery(event, (query) =>
       blogQuery.parse(query),
     );
 
-    const title = query.title;
-    const sort = query.sort;
-    const page = query.page;
-    const limit = query.limit;
-    const result = await Blog.find(
-      title == undefined || title == ""
-        ? {}
-        : { title: new RegExp(`.*${escapeStringRegexp(title)}.*`, "i") },
-    )
+    // Đoạn code nào khó hiểu em có thể giải thích bằng việc nó ra thành variable và đặt tên variable phù hợp 
+    const matchingTitle = title == undefined || title == ""
+                          ? {}
+                          : { title: new RegExp(`.*${escapeStringRegexp(title)}.*`, "i") }
+
+    // Làm như vậy thì em cũng hiểu ngay dòng 21 là match tittle
+    const result = await Blog.find(matchingTitle)
       .sort(appConfig.blogSort[sort])
       .skip((page - 1) * limit)
       .limit(limit);

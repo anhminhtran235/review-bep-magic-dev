@@ -12,6 +12,9 @@ export default NuxtAuthHandler({
     CredentialsProvider.default({
       async authorize(credentials: any) {
         const user = await User.findOne({ username: credentials?.username });
+
+        // [Câu hỏi] Em zai có encrypt password ko ý nhỉ? Hay là store password as plain text?
+        // Với cả em ko cần check username nữa vì nó đã được match ở dòng 14 rồi
         if (
           credentials?.username === user?.username &&
           credentials?.password === user?.password

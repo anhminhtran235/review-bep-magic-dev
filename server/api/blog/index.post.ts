@@ -14,7 +14,9 @@ export default defineEventHandler(async (event) => {
   }
   try {
     const body = await readValidatedBody(event, (body) => blogBody.parse(body));
-    if (body.banner_url !== undefined && body.banner_url !== "") {
+    // Em viết như này thì nó check cả not null nữa. Cho thêm cả .trim() cũng ok
+    // if ('')    if (underfined)    if (null)    if (0)    if (false)   đều return false
+    if (body.banner_url.trim()) {
       const res: { image_url: string } = await $fetch(
         `${runtimeConfig.public.imageDomain}/image`,
         {

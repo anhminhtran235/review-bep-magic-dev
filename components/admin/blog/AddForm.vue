@@ -53,16 +53,19 @@ function handleAddParagraph() {
 
 async function handleAddItem() {
   let requestedBody: { [key: string]: any } = {};
-  if (title.value != "") {
+  // Ko cần != ""
+  if (title.value) {
     requestedBody.title = title.value;
   }
-  if (bannerUrl.value != "") {
+  if (bannerUrl.value) {
     requestedBody.banner_url = bannerUrl.value;
   }
-  if (paragraphs.value.length > 0) {
+  // Cái này vừa check paragraphs.value != null và vừa check paragraphs.value != 0 nên nó cover paragraphs.value.length > 0 luôn
+  if (paragraphs.value) {
     requestedBody.paragraphs = paragraphs.value;
   }
   const { data, error } = await useAsyncData(() =>
+  // Cái này em nên cho vào HttpService
     $fetch("/api/blog", {
       headers: useRequestHeaders(["cookie"]),
       method: "POST",
