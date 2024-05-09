@@ -1,21 +1,25 @@
 import { z } from "zod";
+import { getServerSession } from "#auth";
 import Cart from "~/server/models/cart.schema";
 import Food from "~/server/models/food.schema";
 import mongoose from "mongoose";
 import { cartBody } from "~/server/utils/zod.post";
 
 const appConfig = useAppConfig();
-
 export default defineEventHandler(async (event) => {
+  const session = await getServerSession(event);
   try {
     const body = await readValidatedBody(event, (body) => cartBody.parse(body));
     let grandTotal = 0;
-    body.orders.forEach(async (e) => {
-      const food = await Food.findById(e.food_id, "price");
-      grandTotal += food!.price * e.quantity;
-    });
+    for (let i = 0; i < body.orders.length; i++) {
+      const food = await Food.findById(body.orders[i].food, "price");
+      grandTotal += food!.price * body.orders[i].quantity;
+    }
     body.grand_total = grandTotal;
-    body.is_resolved = false;
+    if (!session || session.user?.name !== "admin") {
+      body.status = "pending";
+    }
+
     const result = await new Cart(body).save();
     return { order_id: result._id };
   } catch (error: any) {

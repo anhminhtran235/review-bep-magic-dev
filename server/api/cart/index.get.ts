@@ -13,13 +13,13 @@ export default defineEventHandler(async (event) => {
   }
   try {
     const query = await getValidatedQuery(event, (query) =>
-      cartQuery.parse(query)
+      cartQuery.parse(query),
     );
-
     const result = await Cart.find(appConfig.cartFilter[query.filter])
       .sort(appConfig.cartSort[query.sort])
       .skip((query.page - 1) * query.limit)
-      .limit(query.limit);
+      .limit(query.limit)
+      .populate({ path: "orders.food", select: "name price -_id" });
     return result;
   } catch (error: any) {
     if (z.instanceof(error)) {

@@ -15,11 +15,13 @@ interface DFood {
 }
 
 interface DOrderItem {
-  food: {
-    _id: string;
-    name: string;
-    price: number;
-  };
+  _id: string;
+  name: string;
+  price: number;
+}
+
+interface DOrderDetails {
+  food: DOrderItem;
   quantity: number;
 }
 
@@ -27,14 +29,19 @@ interface DCart {
   _id: string;
   orders: [
     {
-      food_id: string;
+      food: {
+        _id: string;
+        name: string;
+        price: number;
+      };
       quantity: number;
-    }
+    },
   ];
   grand_total: number;
   phone_number: string;
   delivery_address: string;
-  is_resolved: boolean;
+  status: string;
+  notes: string;
 }
 
 interface DBlog {

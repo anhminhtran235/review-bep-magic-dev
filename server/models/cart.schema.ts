@@ -1,11 +1,12 @@
 import { Schema, model } from "mongoose";
+import appConfig from "~/app.config";
 
 const CartSchema = new Schema<DCart>(
   {
     orders: {
       type: [
         {
-          food_id: {
+          food: {
             type: Schema.Types.ObjectId,
             ref: "Food",
             required: true,
@@ -33,10 +34,16 @@ const CartSchema = new Schema<DCart>(
       type: String,
       required: true,
     },
-    is_resolved: {
-      type: Boolean,
+    status: {
+      type: String,
+      enum: {
+        values: appConfig.statusOptions,
+      },
       required: true,
-      default: false,
+      default: "pending",
+    },
+    notes: {
+      type: String,
     },
   },
   {
@@ -44,7 +51,7 @@ const CartSchema = new Schema<DCart>(
       createdAt: "created_at",
       updatedAt: "updated_at",
     },
-  }
+  },
 );
 
 export default model("Cart", CartSchema);

@@ -1,4 +1,14 @@
 export default defineAppConfig({
+  imageSettings: {
+    product: {
+      width: 640,
+      height: 480,
+    },
+    banner: {
+      width: 1280,
+      height: 720,
+    },
+  },
   navbarItems: [
     {
       name: "Menu",
@@ -13,7 +23,8 @@ export default defineAppConfig({
       navigateTo: "/admin/cart",
     },
   ],
-  categoryFoodOptions: ["Normal", "Smart Chef"],
+  categoryOptions: ["Normal", "Smart Chef"],
+  statusOptions: ["pending", "paid", "delivered"],
   foodFilter: {
     "0": {},
     "1": { is_displayed: false },
@@ -25,8 +36,9 @@ export default defineAppConfig({
   },
   cartFilter: {
     "0": {},
-    "1": { is_resolved: false },
-    "2": { is_resolved: true },
+    "1": { status: "pending" },
+    "2": { status: "paid" },
+    "3": { status: "delivered" },
   },
   blogSort: {
     "0": { updated_at: -1 },

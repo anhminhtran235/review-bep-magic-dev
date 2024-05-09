@@ -71,8 +71,9 @@ export const blogQuery = z
       .transform((val) => parseInt(val))
       .default("1"),
   })
+  .partial({ title: true })
   .strict()
-  .refine((data) => appConfig.blogAdminSort[data.sort] !== undefined, {
+  .refine((data) => appConfig.blogSort[data.sort] !== undefined, {
     path: ["sort"],
     message: "Sort is invalid",
   })
